@@ -16,4 +16,7 @@ public interface MemberRepository extends JpaRepository<Member, String>{
 			+ "WHERE YEAR(m.regDate) = :year "
 			+ "GROUP BY MONTH(m.regDate)")
 	List<JoinCntByMonthDto> countMembersByMonth(@Param("year") int year);	
+
+	Member findByMemberIdAndPassword(@Param("memberId") String memberId, @Param("password") String password);
+
 }

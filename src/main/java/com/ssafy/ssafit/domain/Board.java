@@ -47,6 +47,9 @@ public class Board {
 	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
 	private List<File> files = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+	private List<BoardComment> comments = new ArrayList<>();
+	
 	@Column(nullable = false)
 	private String title;
 

@@ -38,10 +38,10 @@ public class Member {
 	
 	@Column(nullable = false)
 	private String email;
-	
+
 	@Column(nullable = false)
 	private String title;
-	
+  
 	@CreationTimestamp
 	private LocalDateTime regDate;
 	
@@ -50,6 +50,9 @@ public class Member {
 	
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Board> boards = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<Comment> comments = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Likes> likes = new ArrayList<>();

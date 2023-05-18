@@ -22,6 +22,7 @@ import com.ssafy.ssafit.domain.Board;
 import com.ssafy.ssafit.domain.BoardType;
 import com.ssafy.ssafit.domain.Member;
 import com.ssafy.ssafit.domain.QBoard;
+import com.ssafy.ssafit.domain.asset.OrderDirection;
 import com.ssafy.ssafit.exception.NotFoundException;
 import com.ssafy.ssafit.repository.BoardRepository;
 
@@ -63,7 +64,8 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void delete(Long boardId) {
 		// 기존에 해당 게시글이 있는지 null 체크
-		boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+		// null이면 예외 발생
+		this.findByBoardId(boardId);
 
 		// 글 삭제
 		boardRepository.deleteById(boardId);
@@ -102,7 +104,7 @@ public class BoardServiceImpl implements BoardService {
 		// 검색 조건이 null이 아닌 경우,
 		if (orderCondition != null) {
 			// 오름차순 정렬일 때, ASC direction 지정
-			if (orderDirection.toUpperCase().equals("ASC")) {
+			if (orderDirection.toUpperCase().equals(OrderDirection.ASC)) {
 				direction = Direction.ASC;
 			}
 			// 기본 정렬 조건 : DESC
@@ -122,12 +124,13 @@ public class BoardServiceImpl implements BoardService {
 			// 정렬 조건
 			Order direction = order.isAscending() ? Order.ASC : Order.DESC;
 
+			// 정렬 기준 컬럼
 			String prop = order.getProperty();
 
+			// QBoard
 			PathBuilder<Board> pathBuilder = new PathBuilder<Board>(Board.class, "board");
-			PathBuilder<Board> orderByExpression = pathBuilder;
+			orderBy.add(new OrderSpecifier(direction, pathBuilder.get(prop)));
 
-			orderBy.add(new OrderSpecifier(direction, orderByExpression));
 		});
 
 		return orderBy;
@@ -135,7 +138,9 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public Board findByBoardId(Long boardId) {
-		return boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+		return boardRepository.findById(boardId).orElseThrow(() -> {
+			throw new NotFoundException("해당하는 게시물을 찾을 수 없습니다.");
+		});
 	}
 
 }
