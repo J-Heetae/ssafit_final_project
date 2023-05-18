@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.ssafit.domain.Video;
 import com.ssafy.ssafit.service.VideoService;
+import com.ssafy.ssafit.service.VideoServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/video")
 public class VideoController {
 	
-	private final VideoService videoService;
+	private final VideoServiceImpl videoService;
 	
 	@GetMapping("/{no}")
 	public ResponseEntity<Video> findVideo(@PathVariable("no") Long no)  {

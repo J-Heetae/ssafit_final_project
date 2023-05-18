@@ -2,6 +2,7 @@ package com.ssafy.ssafit.domain;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,15 +30,17 @@ import lombok.Setter;
 public abstract class Comment {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long comment_no;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
 
+	@Column(nullable = false)
 	private String title;
 
+	@Column(nullable = false)
 	private String content;
 
 	@CreationTimestamp
