@@ -74,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public Member login(Member member) {
-		Member savedMember = memberRepository.findByMemberIdAndPassword(member);
+		Member savedMember = memberRepository.findByMemberIdAndPassword(member.getMemberId(), member.getPassword());
 
 		if (savedMember == null)
 			throw new NotFoundException("아이디 또는 비밀번호 오류입니다.");
