@@ -9,6 +9,7 @@ public class SsafitFinalProjectApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SsafitFinalProjectApplication.class, args);
+
 	}
 
 }

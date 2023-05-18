@@ -30,14 +30,20 @@ public class Member {
 	@Column(nullable = false)
 	private String password;
 	
+	@Column(nullable = false)
 	private String name;
 	
+	@Column(nullable = false)
 	private int age;
 	
+	@Column(nullable = false)
 	private String email;
-	
+
+	@Column(nullable = false)
+	private String title;
+  
 	@CreationTimestamp
-	private LocalDateTime reg_date;
+	private LocalDateTime regDate;
 	
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Bookmark> bookmarks = new ArrayList<>();
