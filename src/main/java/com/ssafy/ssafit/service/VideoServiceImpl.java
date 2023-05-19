@@ -75,8 +75,6 @@ public class VideoServiceImpl implements VideoService{
 	 */
 	@Override
 	public Video update(Video video) throws DuplicatedException {
-		validateDuplicateVideo(video); //중복 확인
-		
 		Video findVideo = findByNo(video.getVideoNo());
 		
 		//영상 정보 수정

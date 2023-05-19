@@ -32,7 +32,6 @@ public class MemberRepositoryTest {
             member.setName("Name" + i);
             member.setAge(i * 10);
             member.setEmail("email" + i + "@example.com");
-            member.setTitle("Title" + i);
             member.setRegDate(LocalDateTime.now());
 
             memberRepository.save(member);

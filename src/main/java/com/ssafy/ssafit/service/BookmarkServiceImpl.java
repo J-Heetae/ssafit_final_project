@@ -22,33 +22,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BookmarkServiceImpl implements BookmarkService {
 
-	private final VideoRepository videoRepository;
-	private final MemberRepository memberRepository;
 	private final BookmarkRepository bookmarkRepository;
 
 	/**
 	 * 즐겨찾기 추가
 	 */
 	@Override 
-	public void insert(Video video, Member member) throws DuplicatedException { 
-		Member findMember = memberRepository.findById(member.getMemberId())
-				.orElseThrow(() -> new NotFoundException("해당 아이디의 멤버가 존재하지 않습니다. : " + member.getMemberId()));
-		 
-		Video findVideo = videoRepository.findById(video.getVideoNo())
-				.orElseThrow(() -> new NotFoundException("해당 번호의 영상이 존재하지 않습니다. : " + video.getVideoNo()));
+	public Bookmark insert(Video video, Member member) throws DuplicatedException { 
 		  
 		//이전에 추가한 즐겨찾기 영상인지 확인 
 		List<Bookmark> findBookmarkList = bookmarkRepository.findAllByVideoAndMember(video, member);
 		 
-		if(findBookmarkList != null) { //중복된 경우
+		if(findBookmarkList.size() != 0) { //중복된 경우
 			throw new DuplicatedException("이미 즐겨찾기한 영상입니다. memberId : " + member.getMemberId() + ", videoNo : " + video.getVideoNo());
 		}
 	 
-	 	Bookmark bookmark = new Bookmark(findMember, findVideo);
+	 	Bookmark bookmark = new Bookmark(member, video);
 	 
-	 	findMember.getBookmarks().add(bookmark);
-	 	findVideo.getBookmarks().add(bookmark); //저장
-	 	bookmarkRepository.save(bookmark); 
+	 	member.getBookmarks().add(bookmark);
+	 	video.getBookmarks().add(bookmark); //저장
+	 	return bookmarkRepository.save(bookmark); 
 	 }
 	
 
@@ -56,9 +49,22 @@ public class BookmarkServiceImpl implements BookmarkService {
 	 * 즐겨찾기 삭제
 	 */
 	@Override
-	public void delete(Long bookmarkNo) {
+	public void delete(Long bookmarkNo){
 		Bookmark findBookmark = findByNo(bookmarkNo);
+		
+		//맴버와 비디오의 즐겨찾기 리스트에서 해당 즐겨찾기 삭제
+		findBookmark.getMember().getBookmarks().remove(findBookmark);
+		findBookmark.getVideo().getBookmarks().remove(findBookmark);
+		
 		bookmarkRepository.delete(findBookmark);
+	}
+	
+	/**
+	 * 즐겨찾기 전체 조회
+	 */
+	@Override
+	public List<Bookmark> findAll() {
+		return bookmarkRepository.findAll();
 	}
 
 	/**

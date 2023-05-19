@@ -27,7 +27,7 @@ public interface VideoService {
 	//모든 영상 조회
 	Page<Video> findAll(Pageable pageable, String partName, String orderCondition, String orderDirection);
 	
-	//은동 부위로 영상 조회
+	//운동 부위로 영상 조회
 	List<Video> findByPartName(String partName);
 	
 	//정렬 기준으로 영상 조회
