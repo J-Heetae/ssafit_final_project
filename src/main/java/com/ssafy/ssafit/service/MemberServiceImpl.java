@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,6 +27,7 @@ import com.ssafy.ssafit.domain.asset.OrderDirection;
 import com.ssafy.ssafit.exception.DuplicatedException;
 import com.ssafy.ssafit.exception.NotFoundException;
 import com.ssafy.ssafit.repository.MemberRepository;
+import com.ssafy.ssafit.util.JWTUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +40,12 @@ public class MemberServiceImpl implements MemberService {
 	private final JPAQueryFactory queryFactory;
 
 	private QMember member = QMember.member;
-	private QComment comment = QComment.comment;
+	// private QComment comment = QComment.comment;
+
+	// jwt 인증을 위한 필드
+	@Value("${jwt.secret}")
+	private String secretKey;
+	private Long expiredMs = 1000 * 60 * 60L;
 
 	@Override
 	public Member join(Member member) {
@@ -73,15 +80,27 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public Member login(Member member) {
+	public String login(Member member) {
 		Member savedMember = memberRepository.findByMemberIdAndPassword(member.getMemberId(), member.getPassword());
 
 		if (savedMember == null)
 			throw new NotFoundException("아이디 또는 비밀번호 오류입니다.");
 
-		return savedMember;
+		return this.createToken(savedMember.getMemberId());
+
 	}
 
+	private String createToken(String memberId) {
+		return JWTUtil.createToken(memberId, secretKey, expiredMs);
+	}
+
+	@Override
+	public Member findMember(Member member) {
+		return memberRepository.findById(member.getMemberId()).orElseThrow(() -> {
+			throw new NotFoundException("회원 정보를 조회할 수 없습니다.");
+		});
+	}
+	
 	@Override
 	public Page<Member> findAll(Pageable pageable, String orderCondition, String orderDirection) {
 

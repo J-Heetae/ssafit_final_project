@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/video")
+@RequestMapping("/admin")
 public class AdminController {
 	
 	private final VideoServiceImpl videoService;

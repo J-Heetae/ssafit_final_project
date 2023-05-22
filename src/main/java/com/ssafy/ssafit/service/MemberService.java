@@ -16,8 +16,10 @@ public interface MemberService {
 	// 회원 정보 수정 - 비밀번호, 이름, 연락처
 	Member update(Member member);
 
-	// 회원 정보 상세 조회
-	Member login(Member member);
+	// 로그인 기능
+	String login(Member member);
+	
+	Member findMember(Member member);
 
 	// 전체 회원 조회
 //	   - 리뷰를 많이 단 순
