@@ -14,7 +14,7 @@ public class JWTUtil {
 	public static String createToken(String memberId, String secretKey, Long expMs) {
 		Claims claim = Jwts.claims();
 		claim.put("memberId", memberId);
-
+		
 		return Jwts.builder().setClaims(claim).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + expMs))
 				.signWith(SignatureAlgorithm.HS256, secretKey).compact();

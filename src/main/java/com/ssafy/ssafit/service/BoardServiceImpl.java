@@ -1,7 +1,9 @@
 package com.ssafy.ssafit.service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -23,8 +25,10 @@ import com.ssafy.ssafit.domain.BoardType;
 import com.ssafy.ssafit.domain.Member;
 import com.ssafy.ssafit.domain.QBoard;
 import com.ssafy.ssafit.domain.asset.OrderDirection;
+import com.ssafy.ssafit.dto.BoardDTO;
 import com.ssafy.ssafit.exception.NotFoundException;
 import com.ssafy.ssafit.repository.BoardRepository;
+import com.ssafy.ssafit.repository.LikesRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 public class BoardServiceImpl implements BoardService {
 
 	private final BoardRepository boardRepository;
+	private final LikesRepository likesRespository;
 	private final JPAQueryFactory queryFactory;
 
 	private QBoard board = QBoard.board;
@@ -89,6 +94,27 @@ public class BoardServiceImpl implements BoardService {
 		return PageableExecutionUtils.getPage(boards, pageable, countQuery::fetchOne);
 	}
 
+	// 게시글 전체 조회 - 게시판별, 등록일 순, 조회수 순
+	@Override
+	public List<BoardDTO> findAllBoard(BoardType boardType, String orderCondition, String orderDirection) {
+		Sort sort = sortByOrderCondition(orderCondition, orderDirection);
+
+		List<Board> boards = queryFactory.selectFrom(board)
+				// 검색 조건
+				.where(eqBoardType(boardType))
+				// 정렬 조건
+				.orderBy(getOrderSpecifier(sort).stream().toArray(OrderSpecifier[]::new)).fetch();
+
+		List<BoardDTO> result = boards.stream()
+				.map(m -> BoardDTO.builder().boardNo(m.getBoardNo()).memberId(m.getMember().getMemberId())
+						.title(m.getTitle()).content(m.getContent()).viewCnt(m.getViewCnt())
+						.regDate(m.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+						.modDate(m.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).build())
+				.collect(Collectors.toList());
+
+		return result;
+	}
+
 	// 게시판별 검색, 조건이 없으면 null 반환
 	private BooleanExpression eqBoardType(BoardType boardType) {
 		return boardType != null ? board.type.eq(boardType) : null;
@@ -137,10 +163,22 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public Board findByBoardId(Long boardId) {
-		return boardRepository.findById(boardId).orElseThrow(() -> {
+	public BoardDTO findByBoardId(Long boardId) {
+
+		Board board = boardRepository.findById(boardId).orElseThrow(() -> {
 			throw new NotFoundException("해당하는 게시물을 찾을 수 없습니다.");
 		});
+
+		Long likesCnt = likesRespository.countByBoard(board);
+
+		BoardDTO result = BoardDTO.builder().boardNo(board.getBoardNo()).memberId(board.getMember().getMemberId())
+				.title(board.getTitle()).content(board.getContent()).viewCnt(board.getViewCnt()).type(board.getType())
+				.regDate(board.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.modDate(board.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.commentCnt(board.getComments().size()).likesCnt(likesCnt).comments(board.getComments())
+				.files(board.getFiles()).build();
+		
+		return result;
 	}
 
 }

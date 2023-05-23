@@ -1,11 +1,14 @@
 package com.ssafy.ssafit.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.ssafy.ssafit.domain.Board;
 import com.ssafy.ssafit.domain.BoardType;
 import com.ssafy.ssafit.domain.Member;
+import com.ssafy.ssafit.dto.BoardDTO;
 
 public interface BoardService {
 
@@ -34,7 +37,10 @@ public interface BoardService {
 	/**
 	 * 게시글 상세 조회
 	 */
-	Board findByBoardId(Long boardId);
+	BoardDTO findByBoardId(Long boardId);
+
+	
+	List<BoardDTO> findAllBoard(BoardType boardType, String orderCondition, String orderDirection);
 
 	
 }
