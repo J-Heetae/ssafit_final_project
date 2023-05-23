@@ -17,10 +17,15 @@ public interface MemberService {
 	Member update(Member member);
 
 	// 회원 정보 상세 조회
-	Member login(Member member);
-	
+//	Member login(Member member);
+
 	// 회원 아이디로 조회
 	Member findByMemberId(String memberId);
+
+	// 로그인 기능
+	String login(Member member);
+	
+	Member findMember(Member member);
 
 	// 전체 회원 조회
 //	   - 리뷰를 많이 단 순
