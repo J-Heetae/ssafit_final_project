@@ -10,5 +10,7 @@ import com.ssafy.ssafit.domain.BoardComment;
 public interface BoardCommentRepository extends JpaRepository<BoardComment, Long> {
 
 	List<BoardComment> findByBoard(Board board);
-	
+
+	int countByBoard(Board board);
+
 }

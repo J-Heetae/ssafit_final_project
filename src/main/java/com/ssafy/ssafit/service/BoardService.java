@@ -7,15 +7,17 @@ import org.springframework.data.domain.Pageable;
 
 import com.ssafy.ssafit.domain.Board;
 import com.ssafy.ssafit.domain.BoardType;
+import com.ssafy.ssafit.domain.File;
 import com.ssafy.ssafit.domain.Member;
 import com.ssafy.ssafit.dto.BoardDTO;
+import com.ssafy.ssafit.dto.MemberDTO;
 
 public interface BoardService {
 
 	/**
 	 * 게시글 등록
 	 */
-	Board insert(Board board, Member member);
+	BoardDTO insert(BoardDTO board, File file);
 
 	/**
 	 * 게시글 수정
