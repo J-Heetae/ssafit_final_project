@@ -18,6 +18,9 @@ public interface MemberService {
 
 	// 회원 정보 상세 조회
 	Member login(Member member);
+	
+	// 회원 아이디로 조회
+	Member findByMemberId(String memberId);
 
 	// 전체 회원 조회
 //	   - 리뷰를 많이 단 순

@@ -81,6 +81,13 @@ public class MemberServiceImpl implements MemberService {
 
 		return savedMember;
 	}
+	
+	@Override
+	public Member findByMemberId(String memberId) {
+		return memberRepository.findById(memberId).orElseThrow(() -> {
+			throw new NotFoundException("존재하지 않는 회원입니다.");
+		});
+	}
 
 	@Override
 	public Page<Member> findAll(Pageable pageable, String orderCondition, String orderDirection) {
@@ -140,5 +147,4 @@ public class MemberServiceImpl implements MemberService {
 		}
 		return orderBy;
 	}
-
 }
