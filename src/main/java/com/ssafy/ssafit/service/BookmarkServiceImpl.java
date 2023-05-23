@@ -23,13 +23,20 @@ import lombok.RequiredArgsConstructor;
 public class BookmarkServiceImpl implements BookmarkService {
 
 	private final BookmarkRepository bookmarkRepository;
+	private final VideoRepository videoRepository;
+	private final MemberRepository memberRepository;
 
 	/**
 	 * 즐겨찾기 추가
 	 */
 	@Override 
-	public Bookmark insert(Video video, Member member) throws DuplicatedException { 
-		  
+	public Bookmark insert(Long videoNo, String memberId) throws DuplicatedException {
+		Video video = videoRepository.findById(videoNo)
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 영상입니다. : " + videoNo));
+		
+		Member member = memberRepository.findById(memberId)
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다. : " + memberId));
+		
 		//이전에 추가한 즐겨찾기 영상인지 확인 
 		List<Bookmark> findBookmarkList = bookmarkRepository.findAllByVideoAndMember(video, member);
 		 
@@ -40,7 +47,8 @@ public class BookmarkServiceImpl implements BookmarkService {
 	 	Bookmark bookmark = new Bookmark(member, video);
 	 
 	 	member.getBookmarks().add(bookmark);
-	 	video.getBookmarks().add(bookmark); //저장
+	 	video.getBookmarks().add(bookmark);
+	 	
 	 	return bookmarkRepository.save(bookmark); 
 	 }
 	
@@ -49,8 +57,14 @@ public class BookmarkServiceImpl implements BookmarkService {
 	 * 즐겨찾기 삭제
 	 */
 	@Override
-	public void delete(Long bookmarkNo){
-		Bookmark findBookmark = findByNo(bookmarkNo);
+	public void delete(Long videoNo, String memberId){
+		Video video = videoRepository.findById(videoNo)
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 영상입니다. : " + videoNo));
+		
+		Member member = memberRepository.findById(memberId)
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다. : " + memberId));
+		
+		Bookmark findBookmark = bookmarkRepository.findAllByVideoAndMember(video, member).get(0);
 		
 		//맴버와 비디오의 즐겨찾기 리스트에서 해당 즐겨찾기 삭제
 		findBookmark.getMember().getBookmarks().remove(findBookmark);
@@ -80,7 +94,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 	 * 맴버로 즐겨찾기 리스트 조회
 	 */
 	@Override
-	public List<Bookmark> findByMember(Member member) {
+	public List<Bookmark> findByMemberId(String memberId) {
+		Member member = memberRepository.findById(memberId)
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다. : " + memberId));
 		return bookmarkRepository.findAllByMember(member);
 	}
 
@@ -88,7 +104,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 	 * 영상으로 즐겨찾기 리스트 조회
 	 */
 	@Override
-	public List<Bookmark> findByVideo(Video video) {
+	public List<Bookmark> findByVideoNo(Long videoNo) {
+		Video video = videoRepository.findById(videoNo)
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 영상입니다. : " + videoNo));
 		return bookmarkRepository.findAllByVideo(video);
 	}
 }

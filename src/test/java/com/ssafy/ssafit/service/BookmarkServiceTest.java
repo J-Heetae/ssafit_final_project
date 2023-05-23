@@ -11,12 +11,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import com.ssafy.ssafit.domain.Bookmark;
 import com.ssafy.ssafit.domain.Member;
 import com.ssafy.ssafit.domain.Video;
+import com.ssafy.ssafit.dto.VideoDto;
 
 @SpringBootTest
 @Transactional
@@ -59,7 +58,7 @@ public class BookmarkServiceTest {
         }
         
         for(Video video : videos) {
-        	bookmarkService.insert(video, member);
+        	bookmarkService.insert(video.getVideoNo(), member.getMemberId());
         }
 	}
 	
@@ -90,7 +89,7 @@ public class BookmarkServiceTest {
 	    System.out.println("영상 등록 성공");
 	    
 	    //즐겨찾기 등록
-		bookmarkService.insert(video1, member1);
+		bookmarkService.insert(video1.getVideoNo(), member1.getMemberId());
 		
 		assertThat(bookmarkService.findAll().size()).isEqualTo(4);
 	}
@@ -127,7 +126,7 @@ public class BookmarkServiceTest {
 	    System.out.println("영상 등록 성공");
 	    
 	    //즐겨찾기 등록
-		Bookmark savedBookmark = bookmarkService.insert(video1, member1);
+		Bookmark savedBookmark = bookmarkService.insert(video1.getVideoNo(), member1.getMemberId());
 		Long savedBookmarkNo = savedBookmark.getBookmarkNo();
 		
 		Bookmark findBookmark = bookmarkService.findByNo(savedBookmarkNo);
@@ -158,22 +157,21 @@ public class BookmarkServiceTest {
 	    videoService.insert(video1);
 	    	    
 	    //즐겨찾기 등록
-		bookmarkService.insert(video1, member1);
+		bookmarkService.insert(video1.getVideoNo(), member1.getMemberId());
 		
-		assertThat(bookmarkService.findByMember(savedMember).size()).isEqualTo(1);
+		assertThat(bookmarkService.findByMemberId(savedMember.getMemberId()).size()).isEqualTo(1);
 	}
 	
 	@Test
 	public void 비디오로조회() {
-		Pageable pageable = PageRequest.of(0, 10);
 		String partName = null;
 		String orderCondition = "videoNo";
 		String orderDirection = "ASC";
 		
-		List<Video> videos = videoService.findAll(pageable, partName, orderCondition, orderDirection).getContent();
+		List<VideoDto> videos = videoService.findAll(partName, orderCondition, orderDirection);
 		
-		for(Video video : videos) {
-			assertThat(bookmarkService.findByVideo(video).size()).isEqualTo(1);
+		for(VideoDto video : videos) {
+			assertThat(bookmarkService.findByVideoNo(video.getVideoNo()).size()).isEqualTo(1);
 		}
 	}
 }
