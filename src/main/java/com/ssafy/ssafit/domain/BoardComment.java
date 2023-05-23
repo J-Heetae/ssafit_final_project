@@ -16,6 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BoardComment extends Comment {
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "board_no")
 	private Board board;

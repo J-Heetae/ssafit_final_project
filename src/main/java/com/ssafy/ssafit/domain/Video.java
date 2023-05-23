@@ -60,5 +60,8 @@ public class Video {
 	private LocalDateTime modDate;
 	
 	@OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
+	private List<VideoComment> videoComments = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
 	private List<Bookmark> bookmarks = new ArrayList<>();
 }
