@@ -89,6 +89,13 @@ public class MemberServiceImpl implements MemberService {
 		return this.createToken(savedMember.getMemberId());
 
 	}
+	
+	@Override
+	public Member findByMemberId(String memberId) {
+		return memberRepository.findById(memberId).orElseThrow(() -> {
+			throw new NotFoundException("존재하지 않는 회원입니다.");
+		});
+	}
 
 	private String createToken(String memberId) {
 		return JWTUtil.createToken(memberId, secretKey, expiredMs);
@@ -159,5 +166,4 @@ public class MemberServiceImpl implements MemberService {
 		}
 		return orderBy;
 	}
-
 }

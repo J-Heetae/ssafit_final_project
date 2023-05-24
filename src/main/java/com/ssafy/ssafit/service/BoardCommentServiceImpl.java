@@ -28,7 +28,7 @@ public class BoardCommentServiceImpl implements BoardCommentService {
 
 	@Override
 	public BoardComment update(BoardComment comment) {
-		BoardComment savedComment = commentRepository.findById(comment.getComment_no()).orElse(null);
+		BoardComment savedComment = commentRepository.findById(comment.getCommentNo()).orElse(null);
 
 		if (savedComment == null)
 			throw new NotFoundException("등록된 댓글을 찾을 수 없습니다.");

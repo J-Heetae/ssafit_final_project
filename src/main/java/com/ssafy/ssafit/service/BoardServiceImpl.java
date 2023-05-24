@@ -151,7 +151,10 @@ public class BoardServiceImpl implements BoardService {
 				.map(m -> BoardDTO.builder().boardNo(m.getBoardNo()).memberId(m.getMember().getMemberId())
 						.title(m.getTitle()).content(m.getContent()).viewCnt(m.getViewCnt())
 						.regDate(m.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-						.modDate(m.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).build())
+						.modDate(m.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+						.commentCnt(commentRepository.countByBoard(m))
+						.likesCnt(likesRespository.countByBoard(m))
+						.build())
 				.collect(Collectors.toList());
 
 		return result;
@@ -210,6 +213,8 @@ public class BoardServiceImpl implements BoardService {
 		Board board = boardRepository.findById(boardId).orElseThrow(() -> {
 			throw new NotFoundException("해당하는 게시물을 찾을 수 없습니다.");
 		});
+		
+		board.setViewCnt(board.getViewCnt() + 1);
 
 		Long likesCnt = likesRespository.countByBoard(board);
 

@@ -10,10 +10,10 @@ import com.ssafy.ssafit.exception.DuplicatedException;
 public interface BookmarkService {
 
 	//즐겨찾기 추가
-	Bookmark insert(Video video, Member member) throws DuplicatedException;
+	Bookmark insert(Long videoNo, String memberId) throws DuplicatedException;
 	
 	//즐겨찾기 취소
-	void delete(Long bookmarkNo);
+	void delete(Long videoNo, String memberId);
 	
 	//즐겨찾기 전체 조회
 	List<Bookmark> findAll();
@@ -22,9 +22,9 @@ public interface BookmarkService {
 	Bookmark findByNo(Long bookmarkNo);
 	
 	//맴버 아이디로 즐겨찾기 리스트 조회
-	List<Bookmark> findByMember(Member member);
+	List<Bookmark> findByMemberId(String memberId);
 	
 	//영상 번호로 즐겨찾기 리스트 조회
-	List<Bookmark> findByVideo(Video video);
+	List<Bookmark> findByVideoNo(Long videoNo);
 
 }
