@@ -24,5 +24,11 @@ public class ExControllerAdvice {
 		ErrorResult errorResult = new ErrorResult(e.getMessage());
 		return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler
+	public ResponseEntity<ErrorResult> handleAllException(Exception e) {
+		ErrorResult errorResult = new ErrorResult(e.getMessage());
+		return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
+	}
 
 }
