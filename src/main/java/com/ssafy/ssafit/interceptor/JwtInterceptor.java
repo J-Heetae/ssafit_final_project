@@ -25,16 +25,10 @@ public class JwtInterceptor implements HandlerInterceptor {
 
 		String token = request.getHeader(HEADER_AUTH);
 
-		String memberId = JWTUtil.getUserId(token, secretKey);
-		
-		if (!memberId.equals("admin") && request.getMethod().equals("")) {
-			return false;
-		}
-
 		if (token != null && !JWTUtil.isExpired(token, secretKey))
 			return true;
 
-		throw new Exception("유효하지 않는 접근입니다.");
+		throw new Exception("로그인 후 이용해주세요.");
 
 	}
 
