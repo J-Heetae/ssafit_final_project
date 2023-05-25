@@ -75,18 +75,8 @@ public class BoardServiceImpl implements BoardService {
 			// 게시글 엔티티에 추가
 			savedBoard.setFile(savedFile);
 		}
-		
-		BoardDTO result = BoardDTO.builder().boardNo(savedBoard.getBoardNo())
-				.memberId(savedBoard.getMember().getMemberId()).title(savedBoard.getTitle())
-				.content(savedBoard.getContent()).viewCnt(savedBoard.getViewCnt()).type(savedBoard.getType())
-				.regDate(savedBoard.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-				.modDate(savedBoard.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-				.gym(savedBoard.getGym()).comments(commentRepository.findByBoard(savedBoard))
-				.commentCnt(commentRepository.countByBoard(savedBoard))
-				.likesCnt(likesRespository.countByBoard(savedBoard)).comments(savedBoard.getComments())
-				.file(savedBoard.getFile()).build();
 
-		return result;
+		return getBoardDTO(savedBoard);
 	}
 
 	private File insertFile(File file) {
@@ -94,7 +84,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public Board update(Board board) {
+	public BoardDTO update(BoardDTO board) {
 		Board savedBoard = boardRepository.findById(board.getBoardNo()).orElse(null);
 
 		// 게시글 번호에 해당하는 게시글이 없으면 예외 발생
@@ -105,7 +95,21 @@ public class BoardServiceImpl implements BoardService {
 		savedBoard.setTitle(board.getTitle());
 		savedBoard.setContent(board.getContent());
 
-		return savedBoard;
+		return getBoardDTO(savedBoard);
+	}
+
+	@Override
+	public BoardDTO getBoardDTO(Board savedBoard) {
+		return BoardDTO.builder().boardNo(savedBoard.getBoardNo()).memberId(savedBoard.getMember().getMemberId())
+				.title(savedBoard.getTitle()).content(savedBoard.getContent()).viewCnt(savedBoard.getViewCnt())
+				.type(savedBoard.getType())
+				.regDate(savedBoard.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.modDate(savedBoard.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.gym(savedBoard.getGym()).comments(commentRepository.findByBoard(savedBoard))
+				.commentCnt(commentRepository.countByBoard(savedBoard))
+				.likesCnt(likesRespository.countByBoard(savedBoard))
+//				.comments(savedBoard.getComments())
+				.file(savedBoard.getFile()).build();
 	}
 
 	@Override
@@ -154,6 +158,7 @@ public class BoardServiceImpl implements BoardService {
 						.modDate(m.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
 						.commentCnt(commentRepository.countByBoard(m))
 						.likesCnt(likesRespository.countByBoard(m))
+						.file(m.getFile())
 						.build())
 				.collect(Collectors.toList());
 
@@ -213,7 +218,7 @@ public class BoardServiceImpl implements BoardService {
 		Board board = boardRepository.findById(boardId).orElseThrow(() -> {
 			throw new NotFoundException("해당하는 게시물을 찾을 수 없습니다.");
 		});
-		
+
 		board.setViewCnt(board.getViewCnt() + 1);
 
 		Long likesCnt = likesRespository.countByBoard(board);
@@ -222,7 +227,9 @@ public class BoardServiceImpl implements BoardService {
 				.title(board.getTitle()).content(board.getContent()).viewCnt(board.getViewCnt()).type(board.getType())
 				.regDate(board.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
 				.modDate(board.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).gym(board.getGym())
-				.commentCnt(board.getComments().size()).likesCnt(likesCnt).comments(board.getComments())
+				.commentCnt(commentRepository.countByBoard(board))
+				.likesCnt(likesCnt)
+//				.comments(board.getComments())
 				.file(board.getFile()).build();
 
 		return result;

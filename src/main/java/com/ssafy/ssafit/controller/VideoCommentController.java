@@ -59,7 +59,7 @@ public class VideoCommentController {
 		VideoComment videoComment = new VideoComment();
 		
 		videoComment.setContent(content);
-		videoComment.setTitle("");
+//		videoComment.setTitle("");
 		videoComment.setVideo(videoRepository.findById(1L).get());
 		videoComment.setMember(memberService.findByMemberId("user1"));
 		

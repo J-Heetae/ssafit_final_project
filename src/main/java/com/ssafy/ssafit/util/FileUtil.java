@@ -16,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FileUtil {
 
-	private final String upload_path = "C:/images/";
-
+	private static final String upload_path = "C:/save";
+	
 	public com.ssafy.ssafit.domain.File upload(MultipartFile upload_file) {
-
+		
 		if(upload_file == null)
 			return null;
 		// 실제 파일 이름

@@ -42,7 +42,7 @@ public class VideoCommentServiceImpl implements VideoCommentService {
 			throw new NotFoundException("등록된 댓글을 찾을 수 없습니다.");
 
 		// 제목 및 내용 변경
-		savedComment.setTitle(comment.getTitle());
+//		savedComment.setTitle(comment.getTitle());
 		savedComment.setContent(comment.getContent());
 
 		// 변경된 엔티티 리턴

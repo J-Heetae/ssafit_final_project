@@ -20,10 +20,9 @@ public interface BoardService {
 	BoardDTO insert(BoardDTO board, File file);
 
 	/**
-	 * 게시글 수정
-	 * : 제목, 내용 수정 가능
+	 * 게시글 수정 : 제목, 내용 수정 가능
 	 */
-	Board update(Board board);
+	BoardDTO update(BoardDTO board);
 
 	/**
 	 * 게시글 삭제
@@ -31,8 +30,7 @@ public interface BoardService {
 	void delete(Long boardId);
 
 	/**
-	 * 게시글 전체 조회
-	 * : 게시판별, 등록일 순, 조회수 순
+	 * 게시글 전체 조회 : 게시판별, 등록일 순, 조회수 순
 	 */
 	Page<Board> findAll(Pageable pageable, BoardType boardType, String orderCondition, String orderDirection);
 
@@ -41,8 +39,9 @@ public interface BoardService {
 	 */
 	BoardDTO findByBoardId(Long boardId);
 
-	
+	// DTO 변환
+	BoardDTO getBoardDTO(Board savedBoard);
+
 	List<BoardDTO> findAllBoard(BoardType boardType, String orderCondition, String orderDirection);
 
-	
 }

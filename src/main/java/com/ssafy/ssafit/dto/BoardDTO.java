@@ -2,6 +2,7 @@ package com.ssafy.ssafit.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.ssafit.domain.BoardComment;
 import com.ssafy.ssafit.domain.BoardType;
 import com.ssafy.ssafit.domain.File;
@@ -32,14 +33,8 @@ public class BoardDTO {
 	private int commentCnt;
 	private Long likesCnt;
 
+	@JsonIgnore
 	private List<BoardComment> comments;
 	private File file;
-
-	@Override
-	public String toString() {
-		return "BoardDTO [boardNo=" + boardNo + ", memberId=" + memberId + ", title=" + title + ", content=" + content
-				+ ", viewCnt=" + viewCnt + ", type=" + type + ", gym=" + gym + ", regDate=" + regDate + ", modDate="
-				+ modDate + "]";
-	}
 
 }
