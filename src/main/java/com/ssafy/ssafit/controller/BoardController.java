@@ -95,6 +95,13 @@ public class BoardController {
 		BoardDTO board = boardService.findByBoardId(boardNo);
 		return new ResponseEntity<BoardDTO>(board, HttpStatus.OK);
 	}
+	
+	@GetMapping("/board/mypage")
+	public ResponseEntity<List<BoardDTO>> findBoardByMemberId(String memberId) {
+		List<BoardDTO> boards = boardService.findBoardByMemberId(memberId);
+		return new ResponseEntity<List<BoardDTO>>(boards, HttpStatus.OK);
+	}
+
 
 	@PutMapping("/board")
 	public ResponseEntity<BoardDTO> updateBoard(BoardDTO board) {

@@ -44,4 +44,6 @@ public interface BoardService {
 
 	List<BoardDTO> findAllBoard(BoardType boardType, String orderCondition, String orderDirection);
 
+	
+	List<BoardDTO> findBoardByMemberId(String memberId);
 }

@@ -23,6 +23,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.ssafit.domain.Board;
 import com.ssafy.ssafit.domain.BoardType;
 import com.ssafy.ssafit.domain.File;
+import com.ssafy.ssafit.domain.Member;
 import com.ssafy.ssafit.domain.QBoard;
 import com.ssafy.ssafit.domain.asset.OrderDirection;
 import com.ssafy.ssafit.dto.BoardDTO;
@@ -156,10 +157,8 @@ public class BoardServiceImpl implements BoardService {
 						.title(m.getTitle()).content(m.getContent()).viewCnt(m.getViewCnt())
 						.regDate(m.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
 						.modDate(m.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-						.commentCnt(commentRepository.countByBoard(m))
-						.likesCnt(likesRespository.countByBoard(m))
-						.file(m.getFile())
-						.build())
+						.commentCnt(commentRepository.countByBoard(m)).likesCnt(likesRespository.countByBoard(m))
+						.file(m.getFile()).build())
 				.collect(Collectors.toList());
 
 		return result;
@@ -227,11 +226,27 @@ public class BoardServiceImpl implements BoardService {
 				.title(board.getTitle()).content(board.getContent()).viewCnt(board.getViewCnt()).type(board.getType())
 				.regDate(board.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
 				.modDate(board.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).gym(board.getGym())
-				.commentCnt(commentRepository.countByBoard(board))
-				.likesCnt(likesCnt)
+				.commentCnt(commentRepository.countByBoard(board)).likesCnt(likesCnt)
 //				.comments(board.getComments())
 				.file(board.getFile()).build();
 
+		return result;
+	}
+
+	@Override
+	public List<BoardDTO> findBoardByMemberId(String memberId) {
+		Member savedMember = memberRepository.findById(memberId).get();
+		List<Board> boards = boardRepository.findByMember(savedMember);
+
+		List<BoardDTO> result = boards.stream()
+				.map(m -> BoardDTO.builder().boardNo(m.getBoardNo()).memberId(m.getMember().getMemberId())
+						.title(m.getTitle()).content(m.getContent()).viewCnt(m.getViewCnt())
+						.regDate(m.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+						.modDate(m.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+						.commentCnt(commentRepository.countByBoard(m)).likesCnt(likesRespository.countByBoard(m))
+						.file(m.getFile()).build())
+				.collect(Collectors.toList());
+		
 		return result;
 	}
 

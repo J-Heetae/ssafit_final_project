@@ -1,5 +1,6 @@
 package com.ssafy.ssafit.controller;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
 	private final MemberService memberService;
-	
+
 	@PostMapping("/member/login")
 	public ResponseEntity<Map<String, Object>> login(Member member) {
 
@@ -34,20 +35,15 @@ public class MemberController {
 
 		// 로그인 유저 확인
 		String token = memberService.login(member);
-		
+
 		// 저장된 유저 정보
 		Member savedMember = memberService.findMember(member);
-		
-		// DTO로 변경 - 비밀번호 제외
-		MemberDTO savedMem = MemberDTO.builder()
-				.memberId(savedMember.getMemberId())
-				.name(savedMember.getName())
-				.age(savedMember.getAge())
-				.email(savedMember.getEmail())
-				.regDate(savedMember.getRegDate())
-				.build();
 
-		
+		// DTO로 변경 - 비밀번호 제외
+		MemberDTO savedMem = MemberDTO.builder().memberId(savedMember.getMemberId()).name(savedMember.getName())
+				.age(savedMember.getAge()).email(savedMember.getEmail())
+				.regDate(savedMember.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).build();
+
 		result.put("access-token", token);
 		result.put("loginMember", savedMem);
 
@@ -71,6 +67,7 @@ public class MemberController {
 
 	/**
 	 * 회원정보 수정
+	 * 
 	 * @param member
 	 * @return
 	 */
@@ -78,19 +75,16 @@ public class MemberController {
 	public ResponseEntity<MemberDTO> update(Member member) {
 		Member updatedmember = memberService.update(member);
 		// 비밀번호 정보 없이 리턴
-		MemberDTO result = MemberDTO.builder()
-				.memberId(updatedmember.getMemberId())
-				.name(updatedmember.getName())
-				.age(updatedmember.getAge())
-				.email(updatedmember.getEmail())
-				.regDate(updatedmember.getRegDate())
-				.build();
+		MemberDTO result = MemberDTO.builder().memberId(updatedmember.getMemberId()).name(updatedmember.getName())
+				.age(updatedmember.getAge()).email(updatedmember.getEmail())
+				.regDate(updatedmember.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).build();
 
 		return new ResponseEntity<MemberDTO>(result, HttpStatus.ACCEPTED);
 	}
-	
+
 	/**
 	 * 회원정보 삭제
+	 * 
 	 * @param memberId
 	 * @return
 	 */
@@ -99,5 +93,5 @@ public class MemberController {
 		memberService.delete(memberId);
 		return new ResponseEntity<String>("회원 탈퇴가 완료되었습니다.", HttpStatus.ACCEPTED);
 	}
-	
+
 }
