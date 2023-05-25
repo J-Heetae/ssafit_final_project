@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +34,7 @@ public class LikesController {
 		return new ResponseEntity<Long>(result, HttpStatus.OK);
 	}
 
+	@GetMapping("/likes")
 	public ResponseEntity<List<BoardDTO>> selectLikesListByUserId(String memberId) {
 
 		List<Likes> likesList = likesService.selectLikesListByUserId(memberId);
