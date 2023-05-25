@@ -100,7 +100,22 @@ public class VideoServiceImpl implements VideoService {
 	public VideoDto findByNo(Long no) throws NotFoundException {
 		Video v = videoRepository.findById(no)
 				.orElseThrow(() -> new NotFoundException("해당 번호의 영상이 존재하지 않습니다. : " + no));
-		v.setViewCnt(v.getViewCnt() + 1);
+
+		return new VideoDto(v.getVideoNo(), v.getVideoId(), v.getTitle(), v.getPartName(), v.getUrl(),
+				v.getChannelName(), v.getViewCnt(), v.getBookmarks().size(), v.getVideoComments().size(),
+				v.getRegDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+				v.getModDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+	}
+	
+	/**
+	 * 영상 번호로 조회 및 조회수 증가
+	 */
+	@Override
+	public VideoDto findByNoAndView(Long no) throws NotFoundException {
+		Video v = videoRepository.findById(no)
+				.orElseThrow(() -> new NotFoundException("해당 번호의 영상이 존재하지 않습니다. : " + no));
+		
+		v.setViewCnt(v.getViewCnt()+1);
 
 		return new VideoDto(v.getVideoNo(), v.getVideoId(), v.getTitle(), v.getPartName(), v.getUrl(),
 				v.getChannelName(), v.getViewCnt(), v.getBookmarks().size(), v.getVideoComments().size(),

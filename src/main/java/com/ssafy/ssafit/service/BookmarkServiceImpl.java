@@ -47,8 +47,11 @@ public class BookmarkServiceImpl implements BookmarkService {
 
 		Bookmark bookmark = new Bookmark(member, video);
 
+		System.out.println("북마크 추가했다잉");
+		System.out.println("영상에 추가 전 : " + video.getBookmarks().size());
 		member.getBookmarks().add(bookmark);
 		video.getBookmarks().add(bookmark);
+		System.out.println("영상에 추가 후 : " + video.getBookmarks().size());
 
 		return bookmarkRepository.save(bookmark);
 	}

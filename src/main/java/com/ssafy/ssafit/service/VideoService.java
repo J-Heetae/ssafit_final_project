@@ -26,6 +26,9 @@ public interface VideoService {
 	//영상 번호로 영상 조회
 	VideoDto findByNo(Long no) throws NotFoundException;
 	
+	//영상 번호로 영상 조회
+	VideoDto findByNoAndView(Long no) throws NotFoundException;
+	
 	//검색어랑 검색 기준으로 영상 조회
 	List<VideoDto> searchVideos(String keyword, String searchCriteria);
 	

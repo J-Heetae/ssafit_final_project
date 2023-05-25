@@ -39,6 +39,17 @@ public class VideoController {
 	}
 	
 	/**
+	 * 해당 번호와 일치하는 영상 검색
+	 * 조회수 증가
+	 * 
+	 * @param no 영상 번호
+	 */
+	@GetMapping("/view/{no}")
+	public ResponseEntity<VideoDto> findVideoAndViewIncrease(@PathVariable("no") Long no)  {
+		return new ResponseEntity<VideoDto>(videoService.findByNoAndView(no), HttpStatus.OK);
+	}
+	
+	/**
 	 * 특정컬럼에서 검색어에 해당하는 영상 조회
 	 */
 	@GetMapping("/search")
