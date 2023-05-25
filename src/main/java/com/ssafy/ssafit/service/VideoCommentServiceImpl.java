@@ -1,14 +1,23 @@
 package com.ssafy.ssafit.service;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.ssafy.ssafit.domain.Video;
 import com.ssafy.ssafit.domain.VideoComment;
+import com.ssafy.ssafit.domain.asset.OrderDirection;
 import com.ssafy.ssafit.dto.VideoCommentDto;
 import com.ssafy.ssafit.dto.VideoDto;
 import com.ssafy.ssafit.exception.NotFoundException;
@@ -65,9 +74,20 @@ public class VideoCommentServiceImpl implements VideoCommentService {
 	}
 
 	@Override
-	public List<VideoCommentDto> findAllComments(Long videoId) {
-		List<VideoComment> comments = commentRepository.findByVideo(videoRepository.findById(videoId).get());
-		return videoCommentToDto(comments);
+	public List<VideoCommentDto> findAllComments(Long videoNo) {
+		Video video = videoRepository.findById(videoNo).orElse(null);
+		
+		if(video != null) {
+			List<VideoComment> comments = commentRepository.findByVideo(video);
+			
+			List<VideoComment> newest = new ArrayList<>();
+			for(int i=comments.size()-1; i>=0; i--) {
+				newest.add(comments.get(i));
+			}
+			
+			return videoCommentToDto(newest);
+		}
+		return null;
 	}
 	
 	private List<VideoCommentDto> videoCommentToDto(List<VideoComment> comments) {

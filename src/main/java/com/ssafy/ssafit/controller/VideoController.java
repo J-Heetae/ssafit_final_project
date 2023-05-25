@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/video")
+@CrossOrigin(origins="*", allowedHeaders = "*")
 public class VideoController {
 	
 	private final VideoService videoService;
@@ -97,12 +99,4 @@ public class VideoController {
 		videoService.delete(no);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
-	
-//	/**
-//	 * 해당 영상의 모든 댓글 조회하기
-//	 */
-//	@GetMapping("/comment")
-//	public ResponseEntity<List<VideoCommentDto>> findComments(@RequestParam("no") Long videoNo) {
-//		return new ResponseEntity<List<VideoCommentDto>>(videoCommentService.findAllComments(videoNo), HttpStatus.OK);
-//	}
 }

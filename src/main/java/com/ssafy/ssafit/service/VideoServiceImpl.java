@@ -72,7 +72,6 @@ public class VideoServiceImpl implements VideoService {
 	public void delete(Long no) {
 		Video findVideo = videoRepository.findById(no)
 				.orElseThrow(() -> new NotFoundException("해당 번호의 영상이 존재하지 않습니다. : " + no));
-		;
 		videoRepository.delete(findVideo);
 	}
 
