@@ -51,7 +51,7 @@ public class VideoCommentServiceTest {
 	public void 영상댓글등록() {
         VideoComment comment = new VideoComment();
         comment.setMember(member);
-        comment.setTitle("Dummy Comment");
+//        comment.setTitle("Dummy Comment");
         comment.setContent("This is a dummy comment.");
         comment.setVideo(video);
         
@@ -64,7 +64,7 @@ public class VideoCommentServiceTest {
 	public void 영상댓글수정() {
 		VideoComment comment = new VideoComment();
         comment.setMember(member);
-        comment.setTitle("Dummy Comment");
+//        comment.setTitle("Dummy Comment");
         comment.setContent("This is a dummy comment.");
         comment.setVideo(video);
 	        

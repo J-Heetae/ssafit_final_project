@@ -11,7 +11,10 @@ import com.ssafy.ssafit.domain.Board;
 import com.ssafy.ssafit.domain.Likes;
 import com.ssafy.ssafit.domain.Member;
 import com.ssafy.ssafit.domain.QLikes;
+import com.ssafy.ssafit.dto.LikesDTO;
+import com.ssafy.ssafit.repository.BoardRepository;
 import com.ssafy.ssafit.repository.LikesRepository;
+import com.ssafy.ssafit.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,35 +23,39 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LikesServiceImpl implements LikesService {
 
-	private final LikesRepository repository;
+	private final BoardRepository boardRepository;
+	private final LikesRepository likesRepository;
+	private final MemberRepository memberRepository;
 	private final JPAQueryFactory factory;
 
 	private QLikes likes = QLikes.likes;
 
 	@Override
-	public Likes insert(Likes like) {
-		return repository.save(like);
-	}
-
-	@Override
-	public void delete(Long likeNo) {
-		repository.deleteById(likeNo);
-	}
-
-	@Override
 	public Long selectLikeCount(Board board) {
-		return repository.countByBoard(board);
+		return likesRepository.countByBoard(board);
 	}
 
 	@Override
 	public List<Likes> selectLikesListByUserId(String userId) {
-		// 수정 요망
-		Member member = null;
-
-		List<Likes> likesList = factory.selectFrom(likes).where(likes.member.memberId.eq(member.getMemberId()))
+		List<Likes> likesList = factory.selectFrom(likes).where(likes.member.memberId.eq(userId))
 				.orderBy(likes.board.boardNo.desc()).fetch();
 
 		return likesList;
+	}
+
+	@Override
+	public Long likes(LikesDTO likes) {
+		Board savedBoard = boardRepository.findById(likes.getBoardNo()).get();
+		Member savedMember = memberRepository.findById(likes.getMemberId()).get();
+
+		Likes savedLikes = likesRepository.findByboardAndMember(savedBoard, savedMember);
+
+		if (savedLikes == null)
+			likesRepository.save(new Likes(0L, savedBoard, savedMember));
+		else
+			likesRepository.delete(savedLikes);
+
+		return likesRepository.countByBoard(savedBoard);
 	}
 
 }
