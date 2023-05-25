@@ -15,6 +15,8 @@ public interface BookmarkService {
 	//즐겨찾기 취소
 	void delete(Long videoNo, String memberId);
 	
+	boolean findAllByVideoAndMember(String memberId, Long videoNo);
+	
 	//즐겨찾기 전체 조회
 	List<Bookmark> findAll();
 	

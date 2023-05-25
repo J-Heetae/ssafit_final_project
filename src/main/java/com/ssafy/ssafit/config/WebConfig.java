@@ -15,10 +15,12 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/swagger-ui/**")
 				.addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
 	}
-
+	
 	@Override
-	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**").allowedOrigins("*");// .allowedMethods("GET", "POST");
-	}
-
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*");
+    }
 }

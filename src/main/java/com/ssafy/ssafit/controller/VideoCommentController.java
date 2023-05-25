@@ -35,7 +35,6 @@ public class VideoCommentController {
 	@GetMapping
 	public ResponseEntity<List<VideoCommentDto>> findVideoComments(@RequestParam("no") Long videoNo) {
 		List<VideoCommentDto> list = videoCommentService.findAllComments(videoNo);
-		System.out.println(list.size());
 		return new ResponseEntity<List<VideoCommentDto>>(list, HttpStatus.OK);
 	}
 	
@@ -60,8 +59,8 @@ public class VideoCommentController {
 		
 		videoComment.setContent(content);
 		videoComment.setTitle("");
-		videoComment.setVideo(videoRepository.findById(1L).get());
-		videoComment.setMember(memberService.findByMemberId("user1"));
+		videoComment.setVideo(videoRepository.findById(videoNo).get());
+		videoComment.setMember(memberService.findByMemberId(memberId));
 		
 		VideoCommentDto result = videoCommentService.insert(videoComment);
 		

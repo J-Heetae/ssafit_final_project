@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ssafy.ssafit.domain.VideoComment;
 import com.ssafy.ssafit.dto.VideoCommentDto;
+import com.ssafy.ssafit.dto.VideoDto;
 
 public interface VideoCommentService {
 	// 댓글 등록

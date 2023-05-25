@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ssafy.ssafit.domain.Member;
 import com.ssafy.ssafit.dto.MemberDTO;
+import com.ssafy.ssafit.repository.MemberRepository;
 import com.ssafy.ssafit.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
 	private final MemberService memberService;
-
+	
 	@PostMapping("/member/login")
 	public ResponseEntity<Map<String, Object>> login(Member member) {
 
@@ -97,9 +99,5 @@ public class MemberController {
 		memberService.delete(memberId);
 		return new ResponseEntity<String>("회원 탈퇴가 완료되었습니다.", HttpStatus.ACCEPTED);
 	}
-	
-//	public ResponseEntity<MemberDTO> findAll(){
-//		
-//	}
 	
 }

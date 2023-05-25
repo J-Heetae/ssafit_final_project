@@ -29,50 +29,56 @@ public class BookmarkServiceImpl implements BookmarkService {
 	/**
 	 * 즐겨찾기 추가
 	 */
-	@Override 
+	@Override
 	public Bookmark insert(Long videoNo, String memberId) throws DuplicatedException {
 		Video video = videoRepository.findById(videoNo)
 				.orElseThrow(() -> new NotFoundException("존재하지 않는 영상입니다. : " + videoNo));
-		
+
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다. : " + memberId));
-		
-		//이전에 추가한 즐겨찾기 영상인지 확인 
+
+		// 이전에 추가한 즐겨찾기 영상인지 확인
 		List<Bookmark> findBookmarkList = bookmarkRepository.findAllByVideoAndMember(video, member);
-		 
-		if(findBookmarkList.size() != 0) { //중복된 경우
-			throw new DuplicatedException("이미 즐겨찾기한 영상입니다. memberId : " + member.getMemberId() + ", videoNo : " + video.getVideoNo());
+
+		if (findBookmarkList.size() != 0) { // 중복된 경우
+			throw new DuplicatedException(
+					"이미 즐겨찾기한 영상입니다. memberId : " + member.getMemberId() + ", videoNo : " + video.getVideoNo());
 		}
-	 
-	 	Bookmark bookmark = new Bookmark(member, video);
-	 
-	 	member.getBookmarks().add(bookmark);
-	 	video.getBookmarks().add(bookmark);
-	 	
-	 	return bookmarkRepository.save(bookmark); 
-	 }
-	
+
+		Bookmark bookmark = new Bookmark(member, video);
+
+		member.getBookmarks().add(bookmark);
+		video.getBookmarks().add(bookmark);
+
+		return bookmarkRepository.save(bookmark);
+	}
 
 	/**
 	 * 즐겨찾기 삭제
 	 */
 	@Override
-	public void delete(Long videoNo, String memberId){
+	public void delete(Long videoNo, String memberId) {
 		Video video = videoRepository.findById(videoNo)
 				.orElseThrow(() -> new NotFoundException("존재하지 않는 영상입니다. : " + videoNo));
-		
+
 		Member member = memberRepository.findById(memberId)
 				.orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다. : " + memberId));
+
+		List<Bookmark> bookmarks = bookmarkRepository.findAllByVideoAndMember(video, member);
 		
-		Bookmark findBookmark = bookmarkRepository.findAllByVideoAndMember(video, member).get(0);
+		if(bookmarks.size() == 0) {
+			return;
+		}
 		
-		//맴버와 비디오의 즐겨찾기 리스트에서 해당 즐겨찾기 삭제
+		Bookmark findBookmark = bookmarks.get(0);
+		
+		// 맴버와 비디오의 즐겨찾기 리스트에서 해당 즐겨찾기 삭제
 		findBookmark.getMember().getBookmarks().remove(findBookmark);
 		findBookmark.getVideo().getBookmarks().remove(findBookmark);
-		
+
 		bookmarkRepository.delete(findBookmark);
 	}
-	
+
 	/**
 	 * 즐겨찾기 전체 조회
 	 */
@@ -108,5 +114,24 @@ public class BookmarkServiceImpl implements BookmarkService {
 		Video video = videoRepository.findById(videoNo)
 				.orElseThrow(() -> new NotFoundException("존재하지 않는 영상입니다. : " + videoNo));
 		return bookmarkRepository.findAllByVideo(video);
+	}
+
+	/**
+	 * 맴버 아이디와 영상 번호로 해당 영상을 즐겨찾기 했는지 확인
+	 * 
+	 * @return 즐겨찾기 했으면 true, 아니면 false
+	 */
+	@Override
+	public boolean findAllByVideoAndMember(String memberId, Long videoNo) {
+		Member member = memberRepository.findById(memberId)
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 회원입니다. : " + memberId));
+		Video video = videoRepository.findById(videoNo)
+				.orElseThrow(() -> new NotFoundException("존재하지 않는 영상입니다. : " + videoNo));
+		
+		List<Bookmark> bookmarks = bookmarkRepository.findAllByVideoAndMember(video, member);
+		
+		if(bookmarks.size() == 0)
+			return false;
+		return true;
 	}
 }
